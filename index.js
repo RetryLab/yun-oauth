@@ -9,8 +9,8 @@ var util = require('util'),
 /**
  * `Strategy` constructor.
  *
- * The yunOAuth2 authentication strategy authenticates requests by delegating to
- * yunOAuth2 using the OAuth 2.0 protocol.
+ * The yunoauth2 authentication strategy authenticates requests by delegating to
+ * yunoauth2 using the OAuth 2.0 protocol.
  *
  * Applications must supply a `verify` callback which accepts an `accessToken`,
  * `refreshToken` and service-specific `profile`, and then calls the `done`
@@ -18,16 +18,16 @@ var util = require('util'),
  * credentials are not valid.  If an exception occured, `err` should be set.
  *
  * Options:
- *   - `clientID`      your yunOAuth2 application's client id
- *   - `clientSecret`  your yunOAuth2 application's client secret
- *   - `callbackURL`   URL to which yunOAuth2 will redirect the user after granting authorization
+ *   - `clientID`      your yunoauth2 application's client id
+ *   - `clientSecret`  your yunoauth2 application's client secret
+ *   - `callbackURL`   URL to which yunoauth2 will redirect the user after granting authorization
  *
  * Examples:
  *
  *     passport.use(new Thirty7SignalsStrategy({
  *         clientID: '123-456-789',
  *         clientSecret: 'shhh-its-a-secret'
- *         callbackURL: 'https://www.example.net/auth/yunOAuth2/callback'
+ *         callbackURL: 'https://www.example.net/auth/yunoauth2/callback'
  *       },
  *       function(accessToken, refreshToken, profile, done) {
  *         User.findOrCreate(..., function (err, user) {
@@ -46,7 +46,7 @@ function Strategy(options, verify) {
 	options.authorizationURL = options.authorizationURL || (options.oAuthHost + '/dialog/authorize');
 	options.tokenURL = options.tokenURL || (options.oAuthHost + '/oauth/token');
 	OAuth2Strategy.call(this, options, verify);
-	this.name = 'yunOAuth2';
+	this.name = 'yunoauth2';
 	this._options = options;
 }
 
@@ -57,11 +57,11 @@ util.inherits(Strategy, OAuth2Strategy);
 
 
 /**
- * Retrieve user profile from yunOAuth2.
+ * Retrieve user profile from yunoauth2.
  *
  * This function constructs a normalized profile, with the following properties:
  *
- *   - `provider`         always set to `yunOAuth2`
+ *   - `provider`         always set to `yunoauth2`
  *   - `id`
  *   - `username`
  *   - `displayName`
@@ -78,7 +78,7 @@ Strategy.prototype.userProfile = function (accessToken, done) {
 		try {
 			var json = JSON.parse(body),
 				profile = {
-					provider: 'yunOAuth2',
+					provider: 'yunoauth2',
 					openID: json.openID,
 					name: json.name,
 					email: json.email
@@ -124,10 +124,10 @@ var _serialize = function (user, done) {
 
 /** 
  * It will add route to express app
- * @param {string} options.thisHost - example www.abc.com:9000
+ * @param {string} options.host - example www.abc.com:9000
  * @param {string} options.clientID
  * @param {string} [options.clientSecret='clientSecret']
- * @param {string} [options.aurhUrl='/yunOAuth2']
+ * @param {string} [options.authUrl='/yunoauth2']
  * @param {string} [options.successRedirect='/']
  * @param {string} [options.failureRedirect='/']
  */
@@ -136,7 +136,7 @@ exports.easyAuth = function (app ,options) {
 	passport.serializeUser(_serialize);
 	passport.deserializeUser(_serialize);
 
-	var callbackUrl = url.format({protocol:'http:', host:options.host, pathname:'/yunOAuth2/callback'});
+	var callbackUrl = url.format({protocol:'http:', host:options.host, pathname:'/yunoauth2/callback'});
 
 	if(!(options.clientID && options.clientSecret)){
 		throw new Error('invalid clientID and clientSecret');
@@ -153,9 +153,9 @@ exports.easyAuth = function (app ,options) {
 		}
 	));
 
-	app.get(options.aurhUrl || '/yunOAuth2', passport.authenticate('yunOAuth2', { scope: ['email'] }));
-	app.get('/yunOAuth2/callback',
-		passport.authenticate('yunOAuth2',{
+	app.get(options.authUrl || '/yunoauth2', passport.authenticate('yunoauth2', { scope: ['email'] }));
+	app.get('/yunoauth2/callback',
+		passport.authenticate('yunoauth2',{
 			failureRedirect: options.failureRedirect || '/',
 			successRedirect: options.successRedirect || '/'
 		})
