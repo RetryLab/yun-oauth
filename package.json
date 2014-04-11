@@ -1,0 +1,30 @@
+{
+	"name": "yun-oauth",
+	"version": "0.0.2",
+	"description": "yun oauth express middleware",
+	"main": "index.js",
+	"directories": {
+		"example": "example"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/mountdoom/yun-oauth.git"
+	},
+	"dependencies": {
+		"passport": "~0.1.12",
+		"passport-oauth": "*"
+	},
+	"keywords": [
+		"yun.com",
+		"oauth2",
+		"express"
+	],
+	"author": "Shuo",
+	"license": "BSD-2-Clause",
+	"bugs": {
+		"url": "https://github.com/mountdoom/yun-oauth/issues"
+	}
+}
