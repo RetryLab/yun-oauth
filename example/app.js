@@ -18,7 +18,7 @@ app.use(app.router);
 yunOauth.easyAuth(app, {host: '192.168.20.100:3000', clientSecret:'clientSecret', clientID: "5ca33a6f5ab3d1abd7bdbfcb53821539"});
 app.get('/', function (req, res) {
 	if (!req.user) {
-		res.redirect('/yunauth2');
+		res.redirect('/yunoauth2');
 	} else {
 		console.log(req.user);
 		res.send('Hello');

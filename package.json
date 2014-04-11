@@ -1,6 +1,6 @@
 {
 	"name": "yun-oauth",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "yun oauth express middleware",
 	"main": "index.js",
 	"directories": {
