@@ -108,7 +108,7 @@ exports.middleware = function (options) {
 	var session = passport.session();
 	return function (req, res, next) {
 		init(req, res, function () {
-			if (options.session ) {
+			if (options.session) {
 				session(req, res, next);
 			} else {
 				next();
@@ -132,13 +132,13 @@ var _serialize = function (user, done) {
  * @param {string} [options.failureRedirect='/']
  */
 
-exports.easyAuth = function (app ,options) {
+exports.easyAuth = function (app, options) {
 	passport.serializeUser(_serialize);
 	passport.deserializeUser(_serialize);
 
-	var callbackUrl = url.format({protocol:'http:', host:options.host, pathname:'/yunoauth2/callback'});
+	var callbackUrl = url.format({ protocol: 'http:', host: options.host, pathname: '/yunoauth2/callback' });
 
-	if(!(options.clientID && options.clientSecret)){
+	if(!(options.clientID && options.clientSecret)) {
 		throw new Error('invalid clientID and clientSecret');
 	}
 
@@ -155,7 +155,7 @@ exports.easyAuth = function (app ,options) {
 
 	app.get(options.authUrl || '/yunoauth2', passport.authenticate('yunoauth2', { scope: ['email'] }));
 	app.get('/yunoauth2/callback',
-		passport.authenticate('yunoauth2',{
+		passport.authenticate('yunoauth2', {
 			failureRedirect: options.failureRedirect || '/',
 			successRedirect: options.successRedirect || '/'
 		})
