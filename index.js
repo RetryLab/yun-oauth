@@ -126,6 +126,7 @@ var _serialize = function (user, done) {
  * It will add route to express app
  * @param {string} options.host - example www.abc.com:9000
  * @param {string} options.clientID
+ * @param {bool}   options.saveToken
  * @param {string} [options.clientSecret='clientSecret']
  * @param {string} [options.authUrl='/yunoauth2']
  * @param {string} [options.successRedirect='/']
@@ -133,31 +134,32 @@ var _serialize = function (user, done) {
  */
 
 exports.easyAuth = function (app, options) {
-	passport.serializeUser(_serialize);
-	passport.deserializeUser(_serialize);
+    passport.serializeUser(_serialize);
+    passport.deserializeUser(_serialize);
 
-	var callbackUrl = url.format({ protocol: 'http:', host: options.host, pathname: '/yunoauth2/callback' });
+    var callbackUrl = url.format({ protocol: 'http:', host: options.host, pathname: '/yunoauth2/callback' });
 
-	if(!(options.clientID && options.clientSecret)) {
-		throw new Error('invalid clientID and clientSecret');
-	}
+    if(!(options.clientID && options.clientSecret)) {
+	throw new Error('invalid clientID and clientSecret');
+    }
 
-	passport.use(new Strategy({
-			oAuthHost: options.oAuthHost || 'http://account.yunpro.cn',
-			clientID: options.clientID,
-			clientSecret: options.clientSecret || 'clientSecret',
-			callbackURL: options.callbackUrl || callbackUrl
-		},
-		function (accessToken, refreshToken, profile, done) {
-			done(null, profile);
-		}
-	));
+    passport.use(new Strategy({oAuthHost: options.oAuthHost || 'http://account.yunpro.cn',
+			       clientID: options.clientID,
+			       clientSecret: options.clientSecret || 'clientSecret',
+			       callbackURL: options.callbackUrl || callbackUrl
+			      },
+			      function (accessToken, refreshToken, profile, done) {
+				  if (options.saveToken)
+				      profile.accessToken = accessToken;
+				  done(null, profile);
+			      }
+			     ));
 
-	app.get(options.authUrl || '/yunoauth2', passport.authenticate('yunoauth2', { scope: ['email'] }));
-	app.get('/yunoauth2/callback',
-		passport.authenticate('yunoauth2', {
-			failureRedirect: options.failureRedirect || '/',
-			successRedirect: options.successRedirect || '/'
-		})
-	);
+    app.get(options.authUrl || '/yunoauth2', passport.authenticate('yunoauth2', { scope: ['email'] }));
+    app.get('/yunoauth2/callback',
+	    passport.authenticate('yunoauth2', {
+		failureRedirect: options.failureRedirect || '/',
+		successRedirect: options.successRedirect || '/'
+	    })
+	   );
 };
